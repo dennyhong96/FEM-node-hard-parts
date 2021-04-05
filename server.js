@@ -33,6 +33,21 @@ function doOnRequest(request, response) {
 					response.end("the sky");
 				}
 			});
+	} else if (request.method === "PUT" && request.url === "/update") {
+		let reqBody = [];
+
+		request
+			.on("data", (chunk) => {
+				reqBody.push(chunk);
+			})
+			.on("end", () => {
+				reqBody = Buffer.concat(reqBody).toString();
+				fs.writeFileSync("hi_log.txt", `${reqBody}\n`, { encoding: "utf-8" });
+				response.end("Updated!");
+			});
+	} else if (request.method === "DELETE" && request.url === "/delete") {
+		fs.unlinkSync("hi_log.txt");
+		response.end("Deleted!");
 	} else {
 		// Handle 404 error: page not found
 		response.statusCode = 404;

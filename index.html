@@ -12,6 +12,8 @@
   <button id='hiButton'>Say hi!</button>
   <button id='helloButton'>Greet the server with hello!</button>
   <button id='whatsUpButton'>Greet the server with what's up!</button>
+  <button id='updateBtn'>Update hi_log.txt with "Woo! Updated!"</button>
+  <button id='deleteBtn'>Delete hi_log.txt</button>
 </body>
 <script>
   var xmlHttp = new XMLHttpRequest();
@@ -41,6 +43,21 @@
     xmlHttp.setRequestHeader('Content-type', 'text');
     xmlHttp.send('what\'s up'); // what is receiving this greeting?
   }
+
+  const updateBtn = document.querySelector('#updateBtn');
+  updateBtn.addEventListener('click', function (evt) {
+    fetch('/update', {
+      method: "PUT",
+      body: "Woo! Updated!"
+    })
+  });
+
+  const deleteBtn = document.querySelector('#deleteBtn');
+  deleteBtn.addEventListener('click', function (evt) {
+    fetch('/delete', {
+      method: "DELETE"
+    })
+  });
 
 </script>
 
