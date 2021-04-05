@@ -8,7 +8,7 @@
 	},
 	"scripts": {
 		"start": "nodemon server.js",
-		"streams": "cd streams && node streams.js "
+		"streams": "cd streams && nodemon streams.js "
 	},
 	"author": "",
 	"devDependencies": {

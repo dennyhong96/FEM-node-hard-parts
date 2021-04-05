@@ -4,15 +4,17 @@ const fs = require("fs");
 function doOnRequest(request, response) {
 	if (request.method === "GET" && request.url === "/") {
 		// read the index.html file and send it back to the client
-		// fs.createReadStream()
-		const file = fs.readFileSync("index.html");
-		response.end(file);
+		fs.readFile("index.html", (err, file) => {
+			response.end(file);
+		});
 	} else if (request.method === "GET" && request.url === "/style.css") {
-		const cssFile = fs.readFileSync("style.css");
-		response.end(cssFile);
+		fs.readFile("style.css", (err, cssFile) => {
+			response.end(cssFile);
+		});
 	} else if (request.method === "POST" && request.url === "/sayHi") {
-		fs.appendFileSync("hi_log.txt", "Somebody said hi.\n", { encoding: "utf-8" });
-		response.end("hi back to you!");
+		fs.appendFile("hi_log.txt", "Somebody said hi.\n", (err) => {
+			response.end("hi back to you!");
+		});
 	} else if (request.method === "POST" && request.url === "/greeting") {
 		// accumulate the request body in a series of chunks
 		let reqBody = [];
@@ -23,15 +25,16 @@ function doOnRequest(request, response) {
 			})
 			.on("end", () => {
 				reqBody = Buffer.concat(reqBody).toString();
-				fs.appendFileSync("hi_log.txt", `${reqBody}\n`, { encoding: "utf-8" });
 
-				if (reqBody === "hello") {
-					response.end("hello there!");
-				}
+				fs.appendFile("hi_log.txt", `${reqBody}\n`, (err) => {
+					if (reqBody === "hello") {
+						response.end("hello there!");
+					}
 
-				if (reqBody === "what's up") {
-					response.end("the sky");
-				}
+					if (reqBody === "what's up") {
+						response.end("the sky");
+					}
+				});
 			});
 	} else if (request.method === "PUT" && request.url === "/update") {
 		let reqBody = [];
@@ -42,12 +45,14 @@ function doOnRequest(request, response) {
 			})
 			.on("end", () => {
 				reqBody = Buffer.concat(reqBody).toString();
-				fs.writeFileSync("hi_log.txt", `${reqBody}\n`, { encoding: "utf-8" });
-				response.end("Updated!");
+				fs.writeFile("hi_log.txt", `${reqBody}\n`, (err) => {
+					response.end("Updated!");
+				});
 			});
 	} else if (request.method === "DELETE" && request.url === "/delete") {
-		fs.unlinkSync("hi_log.txt");
-		response.end("Deleted!");
+		fs.unlink("hi_log.txt", (err) => {
+			response.end("Deleted!");
+		});
 	} else {
 		// Handle 404 error: page not found
 		response.statusCode = 404;
